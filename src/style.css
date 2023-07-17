@@ -7,3 +7,62 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.container {
+    height: 100%;
+    display: grid;
+    grid-template: 100px 1fr 50px / 200px 1fr;
+}
+
+header {
+    background-color: greenyellow;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    
+    gap: 5px;
+    background-color: limegreen;
+}
+
+.side-button {
+    background-color: limegreen;
+    padding: 5px;
+    border: 0;
+}
+
+.side-button:hover {
+    background-color: lightgrey;
+}
+
+.active {
+    background-color: lightgrey;
+}
+
+.tasks {
+    background-color: lightgrey;
+}
+
+.task-container {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-box {
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+footer {
+    background-color: grey;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    text-align: center;
+    padding: 15px;
+}
