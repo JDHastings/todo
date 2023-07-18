@@ -18,22 +18,28 @@ header {
     background-color: greenyellow;
     grid-column-start: 1;
     grid-column-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidebar {
     display: flex;
     flex-direction: column;
     
-    gap: 5px;
     background-color: limegreen;
 }
 
-.side-button {
+.side-button,
+.sidebar>div,
+.add-project {
     background-color: limegreen;
     padding: 5px;
     border: 0;
+    margin: 5px 0 5px 5px;
 }
 
+.add-project:hover,
 .side-button:hover {
     background-color: lightgrey;
 }
