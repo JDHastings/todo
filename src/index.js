@@ -1,6 +1,11 @@
 import './style.css'
 import htmlFactory from './htmlFactory'
 import taskFactory from './taskFactory'
+import {compareAsc, format} from 'date-fns'
+import endOfToday from 'date-fns/endOfToday'
+import endOfTomorrow from 'date-fns/endOfTomorrow'
+import nextSaturday from 'date-fns/nextSaturday'
+import endOfMonth from 'date-fns/endOfMonth'
 
 let tasks = [];
 
@@ -22,18 +27,17 @@ const footer = htmlFactory('footer', {}, 'Copyright 2023 JDHastings');
 const container = htmlFactory('div', {class: 'container'}, header, sidebar, content, footer);
 document.body.append(container);
 
-// Init random tasks for format tests
-tasks.push(new taskFactory("Eat food", false, new Date("2023-07-18T00:00:00"), 'none'));
-tasks.push(new taskFactory("Poop", false, new Date("2023-07-17T00:00:00"), 'none'));
-tasks.push(new taskFactory("Fart", false, new Date("2023-07-31T00:00:00"), 'none'));
-
-
 document.querySelectorAll('.side-button').forEach(button => {
     button.addEventListener('click', updateDisplay);
 });
 
 function updateDisplay(){
-    document.querySelectorAll('.task-container').forEach(task => task.remove());
+    document.querySelectorAll('.tasks>*').forEach(task => task.remove());
+
+    tasks.sort(function(a,b){
+        return a.date - b.date;
+    });
+
     if(this.id == 'today'){
         displayToday();
     }else if(this.id == 'tomorrow'){
@@ -45,18 +49,47 @@ function updateDisplay(){
     }else{
         displayProject(this.id);
     }
-    addTask();
+    addTask(this.id);
 }
 
-function addTask(){
+function addTask(date){
     const addTaskButton = htmlFactory('button', {class: 'add-task task-container'}, '+ Add Task');
     content.append(addTaskButton);
-    addTaskButton.addEventListener('click', taskUi);
+    addTaskButton.addEventListener('click', () => {
+        taskUi(date);
+    });
 }
 
-function taskUi(){
+function taskUi(date){
     content.lastChild.remove();
-    const taskForm = htmlFactory('form', {class: });
+
+    const submitTask = htmlFactory('button', {}, 'Add Task!');
+    const taskName = htmlFactory('input', {class: 'add-task-input', type: 'text-box'});
+    const taskForm = htmlFactory('div', {class: 'task-form'}, taskName, submitTask);
+    content.append(taskForm);
+    submitTask.addEventListener('click', () => {
+        const newestTask = new taskFactory(taskName.value, false, new Date(), 'none');
+        
+        const day = new Date();
+
+        if(date == 'today'){
+            newestTask.date = endOfToday();
+        }else if(date == 'tomorrow'){
+            newestTask.date = endOfTomorrow();
+        }else if(date == 'week'){
+            newestTask.date = nextSaturday(new Date());
+        }else if(date == 'month'){
+            newestTask.date = endOfMonth(new Date());
+        }else{
+            
+        }
+
+        tasks.push(newestTask);
+        content.lastChild.remove();
+        content.append(renderTask(newestTask));
+        addTask(date);
+    });
+
 }
 
 function displayToday(){
@@ -98,6 +131,6 @@ function displayProject(project){
 function renderTask(task) {
     const taskCompletion = htmlFactory('button', {class: 'check-box'});
     const taskName = htmlFactory('div', {class: 'task-name'}, task.name);
-    const taskDate = htmlFactory('div', {class: 'task-date'}, task.date.toString());
+    const taskDate = htmlFactory('div', {class: 'task-date'}, format(task.date, 'MM/dd/yyyy'));
     return htmlFactory('div', {class: 'task-container'}, taskCompletion, taskName, taskDate);
 }

@@ -65,6 +65,10 @@ header {
     border-radius: 10px;
 }
 
+.task-form {
+    display: flex;
+}
+
 footer {
     background-color: grey;
     grid-column-start: 1;
